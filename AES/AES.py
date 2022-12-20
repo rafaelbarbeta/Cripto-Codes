@@ -57,7 +57,7 @@ class AES:
         self.text = text
         self.key = key
 
-    # Função para transformar uma lista de 16 bytes em uma matriz 4 x 4 
+    # Função para transformar uma lista de 16 bytes em uma matriz 4 x 4 (lista de listas)
     def matrixTransfrom(self,byteList):
         byteMatrix = [[],[],[],[]]
         k = 0

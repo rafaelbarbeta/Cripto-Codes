@@ -2,17 +2,19 @@ import AES
 
 # Programa de teste da classe AES. Permite o usuário inserir um valor hexadecimal e criptografar ou descriptografar ele
 def main():
-    text = input("Por favor, insira um texto em hexadecimal (16 bytes, sem espaços):")
-    key = input("Por favor, insira uma chave (16 bytes, sem espaços:")
-    text = [int(text[i]+text[i+1],base=16) for i in range(0,32,2)]
-    key = [int(key[i]+key[i+1],base=16) for i in range(0,32,2)]
-    myText = AES.AES(text,key)
-    op = input("1 Criptografar\n2 Descriptografar\n")
-    if op == "1":
-        print(list(map(lambda hexval : hex(hexval),myText.aesEncrypt())))
-    else:
-        print(list(map(lambda hexval : hex(hexval),myText.aesDecrypt())))
-    
+    try:
+        text = input("Por favor, insira um texto em hexadecimal (16 bytes, sem espaços):")
+        key = input("Por favor, insira uma chave (16 bytes, sem espaços):")
+        text = [int(text[i]+text[i+1],base=16) for i in range(0,32,2)]
+        key = [int(key[i]+key[i+1],base=16) for i in range(0,32,2)]
+        myText = AES.AES(text,key)
+        op = input("1 Criptografar\n2 Descriptografar\n")
+        if op == "1":
+            print(list(map(lambda hexval : hex(hexval),myText.aesEncrypt())))
+        else:
+            print(list(map(lambda hexval : hex(hexval),myText.aesDecrypt())))
+    except(IndexError):
+        print("O tamanho do texto e/ou a chave em hexdacimal não corresponde a 128 bits. Talvez os zeros a esquerda estejam suprimidos?")
     """
     Sugestão de valores para teste:
     Chave : a020010000004000b500eedead0056aa
