@@ -112,7 +112,7 @@ class AES:
         return byte & 1
     
     # Função g() da expansão de chave.
-    # Recebe os 32 bits 'w32bit', a S-box e o índice atual "rci" para a round constant        
+    # Recebe os 32 bits 'w32bit' e o índice atual "rci" para a round constant        
     def gFunc(self,w32bit,rci):
         # Definição dos valores da round constant
         rcon = [0x01, 0x02,	0x04,	0x08,	0x10,	0x20,	0x40,	0x80,	0x1B,	0x36]
@@ -130,7 +130,7 @@ class AES:
     
     # Gera as subchaves a partir da chave principal. Retorna uma lista com as chaves
     # 'key' é uma lista de 16 objetos do tipo inteiro
-    # retorna uma lista com todas as subchaves. 
+    # retorna uma lista com todas as subchaves, já transformadas em matrizes
     def genSubKeys(self):
         W = list()
         subKeys = list()
@@ -138,7 +138,7 @@ class AES:
         # Gera uma lista de 32 bits para formar os valores de W.
         for i in range(0,len(self.key),4):
             W.append([self.key[i],self.key[i+1],self.key[i+2],self.key[i+3]])
-        # Aplica as transformações para a geração das próximas round key
+        # Aplica as transformações para a geração das próximas round key (XOR encadeados)
         for i in range(10):
             W[0] = list(map(lambda hex1, hex2 :hex1 ^ hex2,W[0],self.gFunc(list(W[3]),i)))
             W[1] = list(map(lambda hex1, hex2 :hex1 ^ hex2,W[0],W[1]))
@@ -157,6 +157,7 @@ class AES:
         return result
     
     # Realiza a substituição de bytes de acordo com a tabela "SBox"
+    # Para descriptografar, basta mudar a tabela "SBox" para "InverseSBox"
     def subBytes(self,state,SBox):
         for i in range(4):
             for j in range(4):
@@ -179,7 +180,7 @@ class AES:
             state[2].append(b2)
             state[2].append(b6)
         
-            # Shift 2 Terceira linha
+            # Shift 3 Quarta linha
             b3 = state[3][0]
             b7 = state[3][1]
             b11 = state[3][2]
@@ -203,7 +204,7 @@ class AES:
             state[2].insert(0,b2)
             state[2].insert(0,b6)
         
-            # Shift 2 Terceira linha direita
+            # Shift 3 Quarta linha direita
             b3 = state[3][3]
             b7 = state[3][2]
             b11 = state[3][1]
@@ -216,6 +217,8 @@ class AES:
 
 
     # Realiza a etapa de mistura de colunas utilizando como parâmetro "mixMatrix"
+    # É o mesmo código para criptografar assim como para descriptografar.
+    # Computa a mistura coluna à coluna
     def mixColumns(self,state,mixMatrix):
         newState = [[],[],[],[]]
         for i in range(4):
@@ -254,7 +257,7 @@ class AES:
             newState[3].append(newbyte3)
         return newState
     
-    # Realiza um round completo do AES. (Substituição, trocar linhas, misturar colunas)
+    # Realiza um round completo do AES. (Substituição, trocar linhas, misturar colunas e adicionar subchave)
     # Recebe uma matriz de estado, uma subchave e as tabelas de embaralhamento
     # O booleano "omitMix" é utilizado para desabilitar o mixColumns no último round, segundo a espec do AES
     def round(self,state,subkey,omitMix):
@@ -277,6 +280,7 @@ class AES:
         return state
 
     # Função principal, criptografa um texto dado por um vetor de 16 bytes e retorna o resultado
+    # Repete 10 vezes os rounds , adicionando ao total 11 chaves
     # Atualiza o estado do "text" para o texto cifrado
     def aesEncrypt(self):
       subKeys = self.genSubKeys()
