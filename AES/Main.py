@@ -10,9 +10,9 @@ def main():
         myText = AES.AES(text,key)
         op = input("1 Criptografar\n2 Descriptografar\n")
         if op == "1":
-            print(list(map(lambda hexval : hex(hexval),myText.aesEncrypt())))
+            print("".join(list(map(lambda hexval : "{:02x}".format(hexval),myText.aesEncrypt()))))
         else:
-            print(list(map(lambda hexval : hex(hexval),myText.aesDecrypt())))
+            print("".join(list(map(lambda hexval : "{:02x}".format(hexval),myText.aesDecrypt()))))
     except(IndexError):
         print("O tamanho do texto e/ou a chave em hexdacimal não corresponde a 128 bits. Talvez os zeros a esquerda estejam suprimidos?")
     """
