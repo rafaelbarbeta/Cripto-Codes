@@ -23,7 +23,7 @@ int main() {
     mpz_t Y;
     mpz_t qtdShifts;
     mpz_t bitAtual;
-    mpz_t aux;
+    mpz_t aux,auxAND;
     mpz_t X;
     mpz_init(Y);
     mpz_init(qtdShifts);
@@ -49,7 +49,8 @@ int main() {
         mpz_mul(Y, Y, Y);
         mpz_mod(Y, Y, n);
         // Se o bit atual for 1, Realiza também a multiplicação por X
-        if (mpz_tstbit(exp, i)) {
+        mpz_and(auxAND, bitAtual, exp);
+        if (mpz_cmp_ui(auxAND, 0) > 0) {
             mpz_mul(Y, Y, X);
             mpz_mod(Y, Y, n);
         }

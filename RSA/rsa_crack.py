@@ -13,7 +13,7 @@ def main():
             break
     # cálculo de phi(N)
     phi = (p-1)*(q-1)
-    # cálculo de d com ajuda do algoritmo de extendido de Euclides
+    # cálculo de d com ajuda do algoritmo extendido de Euclides
     T1 = 0
     T2 = 1
     if E > phi:
